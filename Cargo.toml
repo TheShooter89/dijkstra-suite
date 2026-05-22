@@ -1,0 +1,15 @@
+[package]
+name = "dijkstra-suite"
+version = "0.1.0"
+authors = ["Francesco Paoletti <paoletti.francesco@gmail.com>"]
+edition = "2024"
+description = "A Dijkstra's algorithm implementation that aims to be simple to use and fast to run"
+license = "GPL-3.0"
+license-file = "LICENSE"
+repository = ""
+homepage = ""
+readme = "README.md"
+keywords = ["dijkstra", "pathfinding", "path", "finding", "path finding", "graph", "nodes", "arcs"]
+categories = ["algorithms"]
+
+[dependencies]

@@ -1,0 +1,17 @@
+/target
+
+# environment variables
+.env
+
+# custom testing or temporary files
+*.testing.*
+
+# database files
+static/db/*
+
+.~lock*
+*.csv
+
+*.db
+
+*.svg
