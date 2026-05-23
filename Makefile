@@ -6,3 +6,6 @@ watch:
 
 test:
 	watchexec --notify -r -- cargo test
+
+doc:
+	cargo doc --open
