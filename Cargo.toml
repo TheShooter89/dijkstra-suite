@@ -9,7 +9,7 @@ license-file = "LICENSE"
 repository = "https://github.com/TheShooter89/dijkstra-suite"
 homepage = "https://github.com/TheShooter89/dijkstra-suite"
 readme = "README.md"
-keywords = ["dijkstra", "pathfinding", "path", "finding", "path finding", "graph", "nodes", "arcs"]
+keywords = ["dijkstra", "pathfinding", "path", "graph", "algorithm"]
 categories = ["algorithms"]
 
 [dependencies]
