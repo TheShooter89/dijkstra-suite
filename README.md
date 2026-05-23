@@ -3,12 +3,17 @@
 # dijkstra-suite
 
 [![Crates.io Version](https://img.shields.io/crates/v/dijkstra-suite)](<https://crates.io/crates/dijkstra-suite/>)
+[![docs.rs (with version)](https://img.shields.io/docsrs/dijkstra-suite/latest?label=docs.rs)](https://docs.rs/dijkstra-suite/latest/dijkstra_suite/index.html)
 [![Crates.io License](https://img.shields.io/crates/l/dijkstra-suite)](https://github.com/TheShooter89/dijkstra-suite/blob/master/LICENSE)
 
 A Dijkstra's algorithm implementation that aims to be simple to use and fast to run
 
 > [!CAUTION]
 > WIP: this crate is WORK IN PROGRESS and not ready to be used in production
+
+## Documentation
+
+Check the documentation with example on [docs.rs](https://docs.rs/dijkstra-suite).
 
 ## Quick Start
 

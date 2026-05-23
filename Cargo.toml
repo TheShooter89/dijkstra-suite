@@ -7,6 +7,7 @@ description = "A Dijkstra's algorithm implementation that aims to be simple to u
 license = "GPL-3.0"
 license-file = "LICENSE"
 repository = "https://github.com/TheShooter89/dijkstra-suite"
+documentation = "https://docs.rs/dijkstra-suite"
 homepage = "https://github.com/TheShooter89/dijkstra-suite"
 readme = "README.md"
 keywords = ["dijkstra", "pathfinding", "path", "graph", "algorithm"]
