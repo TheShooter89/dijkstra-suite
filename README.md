@@ -3,7 +3,7 @@
 > [!CAUTION]
 > WIP: this crate is WORK IN PROGRESS and not ready to be used in production
 
-## dijkstra-suite ![GitHub tag status](https://img.shields.io/github/checks-status/TheShooter89/dijkstra-suite/latest)
+## dijkstra-suite ![GitHub Tag](https://img.shields.io/github/v/tag/TheShooter89/dijkstra-suite)
 
 A Dijkstra's algorithm implementation that aims to be simple to use and fast to run
 
