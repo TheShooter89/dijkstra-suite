@@ -1,11 +1,14 @@
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://stand-with-ukraine.pp.ua)
 
-> [!CAUTION]
-> WIP: this crate is WORK IN PROGRESS and not ready to be used in production
+# dijkstra-suite
 
-## dijkstra-suite ![GitHub Tag](https://img.shields.io/github/v/tag/TheShooter89/dijkstra-suite)
+[![Crates.io Version](https://img.shields.io/crates/v/dijkstra-suite)](<https://crates.io/crates/dijkstra-suite/>)
+[![Crates.io License](https://img.shields.io/crates/l/dijkstra-suite)](https://github.com/TheShooter89/dijkstra-suite/blob/master/LICENSE)
 
 A Dijkstra's algorithm implementation that aims to be simple to use and fast to run
+
+> [!CAUTION]
+> WIP: this crate is WORK IN PROGRESS and not ready to be used in production
 
 ## Quick Start
 
