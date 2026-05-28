@@ -12,11 +12,11 @@
 //! Just import the `add()` function and call it
 //!
 //! ```rust
-//! use dijkstra_suite::add;
+//! use dijkstra_suite::dijkstra_path;
 //!
-//! let sum = add(400, 20);
+//! let result = dijkstra_path("graph", "A", "B");
 //!
-//! # assert_eq!(sum, 420);
+//! assert_eq!(result, Ok(()));
 //! ```
 
 #![doc(
@@ -25,9 +25,9 @@
     html_root_url = "https://docs.rs/nanoid"
 )]
 
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+mod dijkstra;
+
+pub use dijkstra::*;
 
 #[cfg(test)]
 mod tests {
@@ -35,7 +35,9 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+        let result = dijkstra_path("graph", "A", "B");
+
+        // assert_eq!(result, Err("blyat".into()));
+        assert_eq!(result, Ok(()));
     }
 }
