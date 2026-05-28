@@ -8,4 +8,4 @@ test:
 	watchexec --notify -r -- cargo test
 
 doc:
-	cargo doc --open
+	cargo doc && python3 -m http.server 1989 --directory target/doc
