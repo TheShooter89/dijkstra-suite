@@ -9,3 +9,6 @@ test:
 
 doc:
 	cargo doc && python3 -m http.server 1989 --directory target/doc
+
+example:
+	watchexec --notify -r -- cargo run --example simple
