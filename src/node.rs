@@ -1,3 +1,46 @@
+//! This modules defines types and traits for a graph node
+//!
+//! ## The`Node` type
+//!
+//! `Node` type plays a central role in this suite.
+//!
+//! Each `Node` has an id and a weight, both generic over types implementing `NodeId`
+//! and `NodeWeight` traits respectively. Both have blanket implementations over generic types
+//! so you can use any types you want as long as it implements the required traits
+//!
+//! ```rust
+//! use dijkstra_suite::node::Node;
+//!
+//! let node_a: Node<(i32, i32), f64> = Node {
+//!     weight: 1.0,
+//!     ..Default::default()
+//! };
+//!
+//! let node_b = Node {
+//!     id: (0, 0),
+//!     weight: 1.0,
+//!     neighbours: vec![],
+//! };
+//!
+//! let node_c: Node<(i32, i32), f32> = Node::default();
+//!
+//! assert_eq!(node_a, node_b);
+//! assert_eq!(node_c.weight, 0.0)
+//! ```
+//!
+//! ## The`NodeId` trait
+//!
+//! `Nodeid` is a super trait that ensures the id of the node is comparable and hashable
+//! (current implementation uses an `HashMap` under the hood), requiring the implementing
+//! type also to implement `Hash`, `Eq` and `Default`
+//!
+//!
+//! ## The`NodeWeight` trait
+//!
+//! `NodeWeight` is a super trait that ensures the weight of the node is a number or number-like
+//! types, requiring the implementing type also to implement `Add`, `Div`, `Mul`, `Rem`, `Sub`
+//! and `PartialEq`
+
 use std::{
     hash::Hash,
     ops::{Add, Div, Mul, Rem, Sub},
