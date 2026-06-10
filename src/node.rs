@@ -48,9 +48,9 @@ use std::{
 
 #[derive(Debug, Clone)]
 pub struct Node<I: NodeId, W: NodeWeight> {
-    id: I,
-    weight: W,
-    neighbours: Vec<NodeConnection<W, I>>,
+    pub id: I,
+    pub weight: W,
+    pub neighbours: Vec<NodeConnection<W, I>>,
 }
 
 impl<I: NodeId, W: NodeWeight> Default for Node<I, W> {
