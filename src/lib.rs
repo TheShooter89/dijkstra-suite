@@ -26,6 +26,7 @@
 )]
 
 mod dijkstra;
+pub mod node;
 
 pub use dijkstra::*;
 
