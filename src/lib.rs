@@ -1,6 +1,9 @@
 //! A Dijkstra's algorithm implementation that aims to be simple to use and fast to run
 //!
-//! ** simple.** nodes id and its cost are defined by yuor own types
+//! *simple.* nodes id and its cost are defined by yuor own types
+//!
+//! *fast.* ok, it's still a work-in-progress, but the goal is a fast computing with as
+//! less allocations as possible
 //!
 //! ```toml
 //! [dependencies]
@@ -9,7 +12,8 @@
 //!
 //! ## Usage
 //!
-//! Just import the `add()` function and call it
+//! Create a `Graph`, define the start and the end node ids, then call `dijkstra_path()` function.
+//! Returned result is a sequence of node ids that represents the shortest path possible
 //!
 //! ```rust
 //! use dijkstra_suite::dijkstra_path;
@@ -30,7 +34,7 @@
     html_root_url = "https://docs.rs/nanoid"
 )]
 
-mod dijkstra;
+pub mod dijkstra;
 pub mod graph;
 pub mod node;
 
