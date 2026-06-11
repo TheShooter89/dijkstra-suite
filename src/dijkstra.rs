@@ -19,7 +19,7 @@
 //!
 //! let result = dijkstra_path(&graph, &start, &end);
 //!
-//! assert_eq!(result, Ok(()));
+//! assert_eq!(result, Ok((0, vec![])));
 //! ```
 
 use crate::{
@@ -28,14 +28,17 @@ use crate::{
 };
 
 /// compute the best possible path in a graph using Dijkstra algorithm
+///
+/// it returns a tuple, with total weight of the path and an ordered sequence of node ids
+/// in the form `(total_weight: NodeWeight, steps: Vec<NodeId>)`
 pub fn dijkstra_path<I: NodeId, W: NodeWeight>(
     graph: &Graph<I, W>,
     start: &I,
     end: &I,
-) -> Result<(), String> {
+) -> Result<(W, Vec<I>), String> {
     println!("dijkstra_path function");
 
-    Ok(())
+    Ok((W::default(), vec![]))
 }
 
 #[cfg(test)]
@@ -51,6 +54,6 @@ mod tests {
         let result = dijkstra_path(&graph, &start, &end);
 
         // assert_eq!(result, Err("blyat".into()));
-        assert_eq!(result, Ok(()));
+        assert_eq!(result, Ok((0, vec![])));
     }
 }
