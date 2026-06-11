@@ -1,14 +1,8 @@
 //! A Dijkstra's algorithm implementation that aims to be simple to use and fast to run
 //!
-//! *simple.* nodes id and its cost are defined by yuor own types
-//!
-//! *fast.* ok, it's still a work-in-progress, but the goal is a fast computing with as
-//! less allocations as possible
-//!
-//! ```toml
-//! [dependencies]
-//! dijkstra-suite = "0.1.0-alpha.0"
-//! ```
+//! This is the central pillar of `dijkstra_suite` crate.
+//! `dijkstra` module implements the algorithm logic, exposes the main function to compute
+//! the shortest path and provides the interface to the core parts of implementation
 //!
 //! ## Usage
 //!
@@ -16,7 +10,7 @@
 //! Returned result is a sequence of node ids that represents the shortest path possible
 //!
 //! ```rust
-//! use dijkstra_suite::dijkstra_path;
+//! use dijkstra_suite::dijkstra::dijkstra_path;
 //! use dijkstra_suite::graph::Graph;
 //!
 //! let graph: Graph<String, i32> = Graph::default();
@@ -28,22 +22,27 @@
 //! assert_eq!(result, Ok((0, vec![])));
 //! ```
 
-#![doc(
-    html_logo_url = "https://www.rust-lang.org/logos/rust-logo-128x128-blk.png",
-    html_favicon_url = "https://www.rust-lang.org/favicon.ico",
-    html_root_url = "https://docs.rs/nanoid"
-)]
+use crate::{
+    graph::Graph,
+    node::{NodeId, NodeWeight},
+};
 
-pub mod dijkstra;
-pub mod graph;
-pub mod node;
+/// compute the best possible path in a graph using Dijkstra algorithm
+///
+/// it returns a tuple, with total weight of the path and an ordered sequence of node ids
+/// in the form `(total_weight: NodeWeight, steps: Vec<NodeId>)`
+pub fn dijkstra_path<I: NodeId, W: NodeWeight>(
+    graph: &Graph<I, W>,
+    start: &I,
+    end: &I,
+) -> Result<(W, Vec<I>), String> {
+    println!("dijkstra_path function");
 
-pub use dijkstra::*;
+    Ok((W::default(), vec![]))
+}
 
 #[cfg(test)]
 mod tests {
-    use crate::graph::Graph;
-
     use super::*;
 
     #[test]
