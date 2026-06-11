@@ -1,6 +1,6 @@
 [package]
 name = "dijkstra-suite"
-version = "0.1.0-alpha.1"
+version = "0.1.0-alpha.2"
 authors = ["Francesco Paoletti <paoletti.francesco@gmail.com>"]
 edition = "2024"
 description = "A Dijkstra's algorithm implementation that aims to be simple to use and fast to run"
