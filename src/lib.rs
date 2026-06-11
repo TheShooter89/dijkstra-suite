@@ -13,8 +13,13 @@
 //!
 //! ```rust
 //! use dijkstra_suite::dijkstra_path;
+//! use dijkstra_suite::graph::Graph;
 //!
-//! let result = dijkstra_path("graph", "A", "B");
+//! let graph: Graph<String, i32> = Graph::default();
+//! let start = "A".to_string();
+//! let end = "B".to_string();
+//!
+//! let result = dijkstra_path(&graph, &start, &end);
 //!
 //! assert_eq!(result, Ok(()));
 //! ```
@@ -33,11 +38,17 @@ pub use dijkstra::*;
 
 #[cfg(test)]
 mod tests {
+    use crate::graph::Graph;
+
     use super::*;
 
     #[test]
     fn it_works() {
-        let result = dijkstra_path("graph", "A", "B");
+        let graph: Graph<String, i32> = Graph::default();
+        let start = "A".to_string();
+        let end = "B".to_string();
+
+        let result = dijkstra_path(&graph, &start, &end);
 
         // assert_eq!(result, Err("blyat".into()));
         assert_eq!(result, Ok(()));
