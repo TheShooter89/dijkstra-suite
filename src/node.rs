@@ -69,12 +69,13 @@ impl<I: NodeId, W: NodeWeight> PartialEq for Node<I, W> {
     }
 }
 
-pub trait NodeId: Default + Eq + Hash {}
+pub trait NodeId: Default + Clone + Eq + Hash {}
 
-impl<T> NodeId for T where T: Default + Eq + Hash {}
+impl<T> NodeId for T where T: Default + Clone + Eq + Hash {}
 
 pub trait NodeWeight:
     Default
+    + Clone
     + PartialEq
     + Add<Output = Self>
     + Sub<Output = Self>
@@ -86,6 +87,7 @@ pub trait NodeWeight:
 
 impl<T> NodeWeight for T where
     T: Default
+        + Clone
         + PartialEq
         + Add<Output = T>
         + Sub<Output = T>

@@ -36,6 +36,7 @@
     html_root_url = "https://docs.rs/nanoid"
 )]
 
+pub mod compute;
 pub mod dijkstra;
 pub mod graph;
 pub mod node;
