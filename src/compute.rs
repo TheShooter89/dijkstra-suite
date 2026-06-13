@@ -1,5 +1,20 @@
+//! Core computing-related types
+//!
+//! ## The`compute` module
+//!
+//! This module contains all types and logic related to computing the dijkstra algorithm itself
+//! code from this module will be used primarily by `dijkstra` module in its logic
+//!
+//! ## Main structs
+//!
+//! The `DistanceFromSource` type keep tracks of each new discovered node shortest distance
+//! from the source (the starting node of the inquired path) and provides the final reconstructed
+//! path
+//!
+//! The `VisitedList` type keeps track of visited nodes as soon as the algorithm process it
+
 use std::{
-    collections::HashMap,
+    collections::{HashMap, HashSet},
     ops::{Deref, DerefMut},
 };
 
@@ -7,6 +22,44 @@ use crate::{
     node::{NodeId, NodeWeight},
     path::Path,
 };
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// +++++++++++++++++++ DistanceFromSource +++++++++++++++++++
+/// keep track of shortest distances discovered and reconstruct shortest path
+
+/// ## The`DistanceFromSource` type
+///
+/// The `DistanceFromSource` type keep tracks of each new discovered node shortest distance
+/// from the source (the starting node of the inquired path)
+///
+/// This type implements the concrete graph representation upon which the dijkstra
+/// implementeation will run to compute the shortest path
+///
+/// ```rust
+/// use dijkstra_suite::path::Path;
+/// use dijkstra_suite::compute::DistanceFromSource;
+///
+/// let mut distances = DistanceFromSource::default();
+///
+/// distances.set_distance((0, 0), 0, None);
+/// distances.set_distance((1, 0), 3, Some((0, 0)));
+/// distances.set_distance((2, 0), 5, Some((0, 0)));
+/// distances.set_distance((3, 0), 7, Some((1, 0)));
+/// distances.set_distance((4, 0), 9, Some((3, 0)));
+/// distances.set_distance((5, 0), 9, Some((3, 0)));
+///
+/// println!("distances: {:?}", distances);
+///
+/// let check_computed_path: Path<(i32, i32), i32> =
+///     (9, vec![(0, 0), (1, 0), (3, 0), (5, 0)]).into();
+/// let computed_path = distances.compute_path((5, 0)).unwrap();
+///
+/// println!("computed weight: {:?}", computed_path.weight);
+/// println!("computed steps: {:?}", computed_path.steps);
+/// assert_eq!(computed_path.weight, check_computed_path.weight);
+/// assert_eq!(computed_path.steps, check_computed_path.steps);
+/// assert_eq!(computed_path, check_computed_path);
+/// ```
 
 #[derive(Debug, Default)]
 pub struct DistanceFromSource<I: NodeId, W: NodeWeight>(HashMap<I, (W, Option<I>)>);
@@ -96,6 +149,64 @@ impl<I: NodeId, W: NodeWeight> DistanceFromSource<I, W> {
         })
     }
 }
+// +++++++++++++++++++ END DistanceFromSource +++++++++++++++++++
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++
+// +++++++++++++++++++ VisitedList +++++++++++++++++++
+/// keep track of visited nodes as soon as the algorithm process it
+///
+/// ## The`VisitedList` type
+///
+/// The `VisitedList` type keep tracks of visited nodes as soon as the algorithm process it
+/// from the source (the starting node of the inquired path)
+///
+/// This type is basically just a wrapper around HashSet, restricted to types that implements
+/// NodeId trait
+///
+/// ```rust
+/// use dijkstra_suite::compute::VisitedList;
+///
+/// let node_1 = "A";
+/// let node_2 = "B";
+/// let node_3 = "C";
+/// let node_4 = "D";
+/// let node_5 = "E";
+///
+/// let mut visited_list = VisitedList::default();
+///
+/// visited_list.insert(node_4);
+/// visited_list.insert(node_1);
+/// visited_list.insert(node_3);
+///
+/// assert!(visited_list.is_visited(&node_4));
+/// assert!(!visited_list.is_visited(&node_2));
+/// assert!(visited_list.is_visited(&node_1));
+/// ```
+
+#[derive(Debug, Default)]
+pub struct VisitedList<I: NodeId>(pub HashSet<I>);
+
+impl<I: NodeId> VisitedList<I> {
+    pub fn is_visited(&self, node_id: &I) -> bool {
+        self.contains(node_id)
+    }
+}
+
+impl<I: NodeId> Deref for VisitedList<I> {
+    type Target = HashSet<I>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<I: NodeId> DerefMut for VisitedList<I> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
+// +++++++++++++++++++ VisitedList +++++++++++++++++++
 
 #[cfg(test)]
 mod test {
@@ -152,6 +263,27 @@ mod test {
         assert_eq!(computed_path.weight, check_computed_path.weight);
         assert_eq!(computed_path.steps, check_computed_path.steps);
         assert_eq!(computed_path, check_computed_path);
+
+        // assert_eq!(1, 2)
+    }
+
+    #[test]
+    fn test_is_visited() {
+        let node_1 = "A";
+        let node_2 = "B";
+        let node_3 = "C";
+        let node_4 = "D";
+        let node_5 = "E";
+
+        let mut visited_list = VisitedList::default();
+
+        visited_list.insert(node_4);
+        visited_list.insert(node_1);
+        visited_list.insert(node_3);
+
+        assert!(visited_list.is_visited(&node_4));
+        assert!(!visited_list.is_visited(&node_2));
+        assert!(visited_list.is_visited(&node_1));
 
         // assert_eq!(1, 2)
     }
