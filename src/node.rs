@@ -99,15 +99,17 @@ impl<T> NodeWeight for T where
 
 #[derive(Debug, Clone)]
 pub struct NodeConnection<W: NodeWeight, I: NodeId> {
-    pub weight: W,
+    pub from: I,
     pub to: I,
+    pub weight: W,
 }
 
 impl<W: NodeWeight, I: NodeId> Default for NodeConnection<W, I> {
     fn default() -> Self {
         NodeConnection {
-            weight: W::default(),
+            from: I::default(),
             to: I::default(),
+            weight: W::default(),
         }
     }
 }
@@ -120,7 +122,7 @@ impl<W: NodeWeight, I: NodeId> AsRef<NodeConnection<W, I>> for NodeConnection<W,
 
 impl<W: NodeWeight, I: NodeId> PartialEq for NodeConnection<W, I> {
     fn eq(&self, other: &Self) -> bool {
-        self.weight == other.weight && self.to == other.to
+        self.from == other.from && self.to == other.to && self.weight == other.weight
     }
 }
 
