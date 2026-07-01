@@ -69,12 +69,13 @@ impl<I: NodeId, W: NodeWeight> PartialEq for Node<I, W> {
     }
 }
 
-pub trait NodeId: Default + Eq + Hash {}
+pub trait NodeId: Default + Clone + Eq + Hash {}
 
-impl<T> NodeId for T where T: Default + Eq + Hash {}
+impl<T> NodeId for T where T: Default + Clone + Eq + Hash {}
 
 pub trait NodeWeight:
     Default
+    + Clone
     + PartialEq
     + Add<Output = Self>
     + Sub<Output = Self>
@@ -86,6 +87,7 @@ pub trait NodeWeight:
 
 impl<T> NodeWeight for T where
     T: Default
+        + Clone
         + PartialEq
         + Add<Output = T>
         + Sub<Output = T>
@@ -97,15 +99,17 @@ impl<T> NodeWeight for T where
 
 #[derive(Debug, Clone)]
 pub struct NodeConnection<W: NodeWeight, I: NodeId> {
-    pub weight: W,
+    pub from: I,
     pub to: I,
+    pub weight: W,
 }
 
 impl<W: NodeWeight, I: NodeId> Default for NodeConnection<W, I> {
     fn default() -> Self {
         NodeConnection {
-            weight: W::default(),
+            from: I::default(),
             to: I::default(),
+            weight: W::default(),
         }
     }
 }
@@ -118,7 +122,7 @@ impl<W: NodeWeight, I: NodeId> AsRef<NodeConnection<W, I>> for NodeConnection<W,
 
 impl<W: NodeWeight, I: NodeId> PartialEq for NodeConnection<W, I> {
     fn eq(&self, other: &Self) -> bool {
-        self.weight == other.weight && self.to == other.to
+        self.from == other.from && self.to == other.to && self.weight == other.weight
     }
 }
 
