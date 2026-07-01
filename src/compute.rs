@@ -12,6 +12,9 @@
 //! path
 //!
 //! The `VisitedList` type keeps track of visited nodes as soon as the algorithm process it
+//!
+//! The `PriorityQueue` type implements the core pillar of implementeation, the min-heap
+//! priority queue to automatically sort out fastest node connections to choose from
 
 use std::{
     cmp::Reverse,
@@ -212,6 +215,40 @@ impl<I: NodeId> DerefMut for VisitedList<I> {
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // +++++++++++++++++++ PriorityQueue +++++++++++++++++++
 /// min-heap queue to get the fastest connection to the next path node
+///
+/// ## The`PriorityQueue` type
+///
+/// The `PriorityQueue` type implements a priority queue using a min-heap
+/// binary tree, uses [`BinaryHeap`](std::collections::BinaryHeap) under
+/// the hood.
+///
+/// It's really just a small fancy newtype-style wrapper type around
+/// [`BinaryHeap`](std::collections::BinaryHeap), restricting it to
+/// `QueuedItem<T>` generic newtype to ensure proper min-like behaviour
+///
+/// ```rust
+/// use dijkstra_suite::compute::{QueuedItem, PriorityQueue};
+///
+/// let node_1: i32 = 1;
+/// let node_2: i32 = 2;
+/// let node_3: i32 = 3;
+/// let node_4: i32 = 4;
+/// let node_5: i32 = 5;
+///
+/// let mut queue: PriorityQueue<i32> = PriorityQueue::from(vec![
+///     // add explicitly trough QueuedItem
+///     QueuedItem::from(node_3),
+/// ]);
+///
+/// queue.push(node_5.into());
+/// queue.push(node_2.into());
+/// queue.push(node_1.into());
+/// queue.push(node_4.into());
+///
+/// println!("peek: {:?}", queue.peek().unwrap());
+///
+/// assert_eq!(queue.pop().unwrap(), QueuedItem::from(1));
+/// ```
 pub struct PriorityQueue<T>(pub BinaryHeap<QueuedItem<T>>);
 
 impl<T> Deref for PriorityQueue<T> {
@@ -359,13 +396,18 @@ mod test {
 
         let mut queue: PriorityQueue<&str> = PriorityQueue::from(vec![
             // add explicitly trough QueuedItem
-            QueuedItem::from(node_1),
+            QueuedItem::from(node_3),
             // implicitly convert to QueuedItem
-            node_2.into(),
-            node_3.into(),
-            node_4.into(),
-            node_5.into(),
+            // node_2.into(),
+            // node_3.into(),
+            // node_4.into(),
+            // node_5.into(),
         ]);
+
+        queue.push(node_5.into());
+        queue.push(node_2.into());
+        queue.push(node_1.into());
+        queue.push(node_4.into());
 
         println!("peek: {:?}", queue.peek().unwrap());
 
