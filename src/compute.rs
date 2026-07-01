@@ -14,7 +14,8 @@
 //! The `VisitedList` type keeps track of visited nodes as soon as the algorithm process it
 
 use std::{
-    collections::{HashMap, HashSet},
+    cmp::Reverse,
+    collections::{BinaryHeap, HashMap, HashSet},
     ops::{Deref, DerefMut},
 };
 
@@ -206,7 +207,69 @@ impl<I: NodeId> DerefMut for VisitedList<I> {
     }
 }
 
-// +++++++++++++++++++ VisitedList +++++++++++++++++++
+// +++++++++++++++++++ END VisitedList +++++++++++++++++++
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++
+// +++++++++++++++++++ PriorityQueue +++++++++++++++++++
+/// min-heap queue to get the fastest connection to the next path node
+pub struct PriorityQueue<T>(pub BinaryHeap<QueuedItem<T>>);
+
+impl<T> Deref for PriorityQueue<T> {
+    type Target = BinaryHeap<QueuedItem<T>>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<T> DerefMut for PriorityQueue<T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
+impl<T: Ord> From<T> for PriorityQueue<T> {
+    fn from(value: T) -> Self {
+        PriorityQueue(BinaryHeap::from([QueuedItem::from(value)]))
+    }
+}
+
+impl<T: Ord> From<Vec<QueuedItem<T>>> for PriorityQueue<T> {
+    fn from(value: Vec<QueuedItem<T>>) -> Self {
+        PriorityQueue(BinaryHeap::from(value))
+    }
+}
+
+// +++++++++++++++++++ END PriorityQueue  +++++++++++++++++++
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++
+// +++++++++++++++++++ QueuedItem +++++++++++++++++++
+/// min-heap queue to get the fastest connection to the next path node
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub struct QueuedItem<T>(pub Reverse<T>);
+
+impl<T> Deref for QueuedItem<T> {
+    type Target = Reverse<T>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<T> DerefMut for QueuedItem<T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
+impl<T> From<T> for QueuedItem<T> {
+    fn from(value: T) -> Self {
+        QueuedItem(Reverse(value))
+    }
+}
+
+// +++++++++++++++++++ END QueuedItem  +++++++++++++++++++
 
 #[cfg(test)]
 mod test {
@@ -284,6 +347,54 @@ mod test {
         assert!(visited_list.is_visited(&node_4));
         assert!(!visited_list.is_visited(&node_2));
         assert!(visited_list.is_visited(&node_1));
+    }
+
+    #[test]
+    fn test_priority_queue() {
+        let node_1 = "A";
+        let node_2 = "B";
+        let node_3 = "C";
+        let node_4 = "D";
+        let node_5 = "E";
+
+        let mut queue: PriorityQueue<&str> = PriorityQueue::from(vec![
+            // add explicitly trough QueuedItem
+            QueuedItem::from(node_1),
+            // implicitly convert to QueuedItem
+            node_2.into(),
+            node_3.into(),
+            node_4.into(),
+            node_5.into(),
+        ]);
+
+        println!("peek: {:?}", queue.peek().unwrap());
+
+        assert_eq!(queue.pop().unwrap(), QueuedItem::from("A"));
+
+        // assert_eq!(1, 2)
+    }
+
+    #[test]
+    fn test_priority_queue_i32() {
+        let node_1: i32 = 1;
+        let node_2: i32 = 2;
+        let node_3: i32 = 3;
+        let node_4: i32 = 4;
+        let node_5: i32 = 5;
+
+        let mut queue: PriorityQueue<i32> = PriorityQueue::from(vec![
+            // add explicitly trough QueuedItem
+            QueuedItem::from(node_1),
+            // implicitly convert to QueuedItem
+            node_2.into(),
+            node_3.into(),
+            node_4.into(),
+            node_5.into(),
+        ]);
+
+        println!("peek: {:?}", queue.peek().unwrap());
+
+        assert_eq!(queue.pop().unwrap(), QueuedItem::from(1));
 
         // assert_eq!(1, 2)
     }
