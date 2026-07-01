@@ -281,8 +281,33 @@ impl<T: Ord> From<Vec<QueuedItem<T>>> for PriorityQueue<T> {
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // +++++++++++++++++++ QueuedItem +++++++++++++++++++
-/// min-heap queue to get the fastest connection to the next path node
-
+/// generic representation for an item queued onto priority queue
+///
+/// ## The`QueuedItem` type
+///
+/// It's really just a small fancy newtype-style wrapper type around
+/// [`Reverse`](std::cmp::Reverse), so that there's no need to mess with
+/// custom types Ord or PartialOrd impls for user's own types
+///
+/// ```rust
+/// use dijkstra_suite::compute::QueuedItem;
+/// use std::cmp::Reverse;
+///
+/// let item_1: QueuedItem<i32> = QueuedItem::from(1);
+/// let item_2 = QueuedItem::from(69_i32);
+///
+/// let reverse = item_1.0;
+/// let value = reverse.0;
+///
+/// assert_eq!(reverse, Reverse(1));
+/// assert_eq!(value, 1);
+///
+/// let reverse = item_2.0;
+/// let value = reverse.0;
+///
+/// assert_eq!(reverse, Reverse(69));
+/// assert_eq!(value, 69);
+/// ```
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct QueuedItem<T>(pub Reverse<T>);
 
