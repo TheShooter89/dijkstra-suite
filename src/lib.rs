@@ -41,6 +41,7 @@ pub mod dijkstra;
 pub mod graph;
 pub mod node;
 pub mod path;
+pub mod strategy;
 
 pub use dijkstra::*;
 
