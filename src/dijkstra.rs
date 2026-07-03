@@ -18,7 +18,7 @@
 //! let start = "A".to_string();
 //! let end = "B".to_string();
 //!
-//! let result = dijkstra_path(&graph, &start, &end);
+//! let result = dijkstra_path(&graph, start, end);
 //!
 //! assert_eq!(result, Ok(Path::default()));
 //! ```
@@ -27,19 +27,23 @@ use crate::{
     graph::Graph,
     node::{NodeId, NodeWeight},
     path::Path,
+    strategy::Strategy,
+    v1::strategy::DijkstraAlgorithm,
 };
+
+pub mod v1;
 
 /// compute the best possible path in a graph using Dijkstra algorithm
 ///
 /// it returns a `Path` holding both the weight and the steps of the path
 pub fn dijkstra_path<I: NodeId, W: NodeWeight>(
     graph: &Graph<I, W>,
-    start: &I,
-    end: &I,
+    from: I,
+    to: I,
 ) -> Result<Path<I, W>, String> {
     println!("dijkstra_path function");
 
-    Ok(Path::default())
+    Strategy::execute::<DijkstraAlgorithm, I, W>(graph, from, to)
 }
 
 #[cfg(test)]
@@ -52,7 +56,7 @@ mod tests {
         let start = "A".to_string();
         let end = "B".to_string();
 
-        let result = dijkstra_path(&graph, &start, &end);
+        let result = dijkstra_path(&graph, start, end);
 
         // assert_eq!(result, Err("blyat".into()));
         assert_eq!(result, Ok(Path::default()));
