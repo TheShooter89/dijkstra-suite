@@ -7,7 +7,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! dijkstra-suite = "0.1.0-beta"
+//! dijkstra-suite = "0.1.0-beta.1"
 //! ```
 //!
 //! ## Usage
@@ -25,7 +25,7 @@
 //! let start = "A".to_string();
 //! let end = "B".to_string();
 //!
-//! let result = dijkstra_path(&graph, &start, &end);
+//! let result = dijkstra_path(&graph, start, end);
 //!
 //! assert_eq!(result, Ok(Path::default()));
 //! ```
@@ -36,10 +36,12 @@
     html_root_url = "https://docs.rs/nanoid"
 )]
 
+pub mod compute;
 pub mod dijkstra;
 pub mod graph;
 pub mod node;
 pub mod path;
+pub mod strategy;
 
 pub use dijkstra::*;
 
@@ -55,7 +57,7 @@ mod tests {
         let start = "A".to_string();
         let end = "B".to_string();
 
-        let result = dijkstra_path(&graph, &start, &end);
+        let result = dijkstra_path(&graph, start, end);
 
         // assert_eq!(result, Err("blyat".into()));
         assert_eq!(result, Ok(Path::default()));

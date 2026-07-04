@@ -7,5 +7,5 @@ fn main() {
     let start = "A".to_string();
     let end = "B".to_string();
 
-    let _shortest_path = dijkstra_path(&graph, &start, &end);
+    let _shortest_path = dijkstra_path(&graph, start, end);
 }
