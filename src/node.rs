@@ -42,6 +42,7 @@
 //! and `PartialEq`
 
 use std::{
+    fmt::Debug,
     hash::Hash,
     ops::{Add, Div, Mul, Rem, Sub},
 };
@@ -69,12 +70,13 @@ impl<I: NodeId, W: NodeWeight> PartialEq for Node<I, W> {
     }
 }
 
-pub trait NodeId: Default + Clone + Eq + Hash {}
+pub trait NodeId: Debug + Default + Clone + Eq + Hash {}
 
-impl<T> NodeId for T where T: Default + Clone + Eq + Hash {}
+impl<T> NodeId for T where T: Debug + Default + Clone + Eq + Hash {}
 
 pub trait NodeWeight:
-    Default
+    Debug
+    + Default
     + Clone
     + PartialEq
     + Add<Output = Self>
@@ -86,7 +88,8 @@ pub trait NodeWeight:
 }
 
 impl<T> NodeWeight for T where
-    T: Default
+    T: Debug
+        + Default
         + Clone
         + PartialEq
         + Add<Output = T>
