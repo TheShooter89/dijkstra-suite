@@ -249,9 +249,10 @@ impl<I: NodeId> DerefMut for VisitedList<I> {
 ///
 /// assert_eq!(queue.pop().unwrap(), QueuedItem::from(1));
 /// ```
-pub struct PriorityQueue<T>(pub BinaryHeap<QueuedItem<T>>);
+#[derive(Debug)]
+pub struct PriorityQueue<T: Default>(pub BinaryHeap<QueuedItem<T>>);
 
-impl<T> Deref for PriorityQueue<T> {
+impl<T: Default> Deref for PriorityQueue<T> {
     type Target = BinaryHeap<QueuedItem<T>>;
 
     fn deref(&self) -> &Self::Target {
@@ -259,24 +260,24 @@ impl<T> Deref for PriorityQueue<T> {
     }
 }
 
-impl<T> DerefMut for PriorityQueue<T> {
+impl<T: Default> DerefMut for PriorityQueue<T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
-impl<T: Ord> From<T> for PriorityQueue<T> {
-    fn from(value: T) -> Self {
-        PriorityQueue(BinaryHeap::from([QueuedItem::from(value)]))
-    }
-}
+// impl<T: Default + Ord> From<T> for PriorityQueue<T> {
+//     fn from(value: T) -> Self {
+//         PriorityQueue(BinaryHeap::from([QueuedItem::from(value)]))
+//     }
+// }
 
-impl<T: Ord> From<Vec<QueuedItem<T>>> for PriorityQueue<T> {
-    fn from(value: Vec<QueuedItem<T>>) -> Self {
-        PriorityQueue(BinaryHeap::from(value))
-    }
-}
-
+// impl<T: PartialOrd> PartialOrd for PriorityQueue<T> {
+//     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+//         self.0.
+//     }
+// }
+//
 // +++++++++++++++++++ END PriorityQueue  +++++++++++++++++++
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -308,7 +309,7 @@ impl<T: Ord> From<Vec<QueuedItem<T>>> for PriorityQueue<T> {
 /// assert_eq!(reverse, Reverse(69));
 /// assert_eq!(value, 69);
 /// ```
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord)]
 pub struct QueuedItem<T>(pub Reverse<T>);
 
 impl<T> Deref for QueuedItem<T> {
@@ -331,6 +332,24 @@ impl<T> From<T> for QueuedItem<T> {
     }
 }
 
+// impl Ord for QueuedItem<f32> {
+//     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+//         self.0.0.total_cmp(&other.0.0)
+//     }
+// }
+
+// impl<T: PartialOrd> PartialOrd for QueuedItem<T> {
+//     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+//         self.0.partial_cmp(&other.0)
+//     }
+// }
+
+impl<T: Default + Ord> From<Vec<QueuedItem<T>>> for PriorityQueue<T> {
+    fn from(value: Vec<QueuedItem<T>>) -> Self {
+        PriorityQueue(BinaryHeap::from(value))
+    }
+}
+//
 // +++++++++++++++++++ END QueuedItem  +++++++++++++++++++
 
 #[cfg(test)]
@@ -462,6 +481,31 @@ mod test {
         println!("peek: {:?}", queue.peek().unwrap());
 
         assert_eq!(queue.pop().unwrap(), QueuedItem::from(1));
+
+        // assert_eq!(1, 2)
+    }
+
+    #[test]
+    fn test_priority_queue_f32() {
+        let node_1: f32 = 1.0;
+        let node_2: f32 = 2.0;
+        let node_3: f32 = 3.0;
+        let node_4: f32 = 4.0;
+        let node_5: f32 = 5.0;
+
+        // let mut queue: PriorityQueue<f32> = PriorityQueue::from(vec![
+        //     // add explicitly trough QueuedItem
+        //     QueuedItem::from(node_1),
+        //     // implicitly convert to QueuedItem
+        //     node_2.into(),
+        //     node_3.into(),
+        //     node_4.into(),
+        //     node_5.into(),
+        // ]);
+        //
+        // println!("peek: {:?}", queue.peek().unwrap());
+        //
+        // assert_eq!(queue.pop().unwrap(), QueuedItem::from(1.0));
 
         // assert_eq!(1, 2)
     }
