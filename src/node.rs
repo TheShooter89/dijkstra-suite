@@ -44,7 +44,7 @@
 use std::{
     fmt::Debug,
     hash::Hash,
-    ops::{Add, Div, Mul, Rem, Sub},
+    ops::{Add, Deref, Div, Mul, Rem, Sub},
 };
 
 #[derive(Debug, Clone)]
@@ -100,6 +100,147 @@ impl<T> NodeWeight for T where
         + Div<Output = T>
         + Rem<Output = T>
 {
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd, Ord)]
+struct Weight<T>(T)
+where
+    T: Debug
+        + Default
+        + Clone
+        + PartialEq
+        + PartialOrd
+        + Ord
+        + Add<Output = T>
+        + Sub<Output = T>
+        + Mul<Output = T>
+        + Div<Output = T>
+        + Rem<Output = T>;
+
+impl<T> Deref for Weight<T>
+where
+    T: Debug
+        + Default
+        + Clone
+        + PartialEq
+        + PartialOrd
+        + Ord
+        + Add<Output = T>
+        + Sub<Output = T>
+        + Mul<Output = T>
+        + Div<Output = T>
+        + Rem<Output = T>,
+{
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<T> Add for Weight<T>
+where
+    T: Debug
+        + Default
+        + Clone
+        + PartialEq
+        + PartialOrd
+        + Ord
+        + Add<Output = T>
+        + Sub<Output = T>
+        + Mul<Output = T>
+        + Div<Output = T>
+        + Rem<Output = T>,
+{
+    type Output = Weight<T>;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Weight(self.0 + rhs.0)
+    }
+}
+
+impl<T> Sub for Weight<T>
+where
+    T: Debug
+        + Default
+        + Clone
+        + PartialEq
+        + PartialOrd
+        + Ord
+        + Add<Output = T>
+        + Sub<Output = T>
+        + Mul<Output = T>
+        + Div<Output = T>
+        + Rem<Output = T>,
+{
+    type Output = Weight<T>;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        Weight(self.0 - rhs.0)
+    }
+}
+
+impl<T> Mul for Weight<T>
+where
+    T: Debug
+        + Default
+        + Clone
+        + PartialEq
+        + PartialOrd
+        + Ord
+        + Add<Output = T>
+        + Sub<Output = T>
+        + Mul<Output = T>
+        + Div<Output = T>
+        + Rem<Output = T>,
+{
+    type Output = Weight<T>;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        Weight(self.0 * rhs.0)
+    }
+}
+
+impl<T> Div for Weight<T>
+where
+    T: Debug
+        + Default
+        + Clone
+        + PartialEq
+        + PartialOrd
+        + Ord
+        + Add<Output = T>
+        + Sub<Output = T>
+        + Mul<Output = T>
+        + Div<Output = T>
+        + Rem<Output = T>,
+{
+    type Output = Weight<T>;
+
+    fn div(self, rhs: Self) -> Self::Output {
+        Weight(self.0 / rhs.0)
+    }
+}
+
+impl<T> Rem for Weight<T>
+where
+    T: Debug
+        + Default
+        + Clone
+        + PartialEq
+        + PartialOrd
+        + Ord
+        + Add<Output = T>
+        + Sub<Output = T>
+        + Mul<Output = T>
+        + Div<Output = T>
+        + Rem<Output = T>,
+{
+    type Output = Weight<T>;
+
+    fn rem(self, rhs: Self) -> Self::Output {
+        Weight(self.0 % rhs.0)
+    }
 }
 
 #[derive(Debug, Clone, Eq, PartialOrd)]
