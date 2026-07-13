@@ -102,148 +102,87 @@ impl<T> NodeWeight for T where
 {
 }
 
-#[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd, Ord)]
-struct Weight<T>(T)
-where
-    T: Debug
-        + Default
-        + Clone
-        + PartialEq
-        + PartialOrd
-        + Ord
-        + Add<Output = T>
-        + Sub<Output = T>
-        + Mul<Output = T>
-        + Div<Output = T>
-        + Rem<Output = T>;
+// #[derive(Debug, Default, Clone, PartialEq)]
+// pub struct Weight<T: NodeWeight>(pub T);
+//
+// impl<T: NodeWeight> Eq for Weight<T> {}
+//
+// impl<T: NodeWeight> Ord for Weight<T> {
+//     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+//         self.0
+//             .partial_cmp(&other.0)
+//             .expect("Weight contains a value with no defined order (e.g. NaN)")
+//     }
+// }
+//
+// impl<T: NodeWeight> PartialOrd for Weight<T> {
+//     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+//         Some(self.cmp(other))
+//     }
+// }
+//
+// impl<T> Deref for Weight<T>
+// where
+//     T: Debug
+//         + Default
+//         + Clone
+//         + PartialEq
+//         + PartialOrd
+//         + Ord
+//         + Add<Output = T>
+//         + Sub<Output = T>
+//         + Mul<Output = T>
+//         + Div<Output = T>
+//         + Rem<Output = T>,
+// {
+//     type Target = T;
+//
+//     fn deref(&self) -> &Self::Target {
+//         &self.0
+//     }
+// }
+//
+// impl<T: NodeWeight> Add for Weight<T> {
+//     type Output = Weight<T>;
+//
+//     fn add(self, rhs: Self) -> Self::Output {
+//         Weight(self.0 + rhs.0)
+//     }
+// }
+//
+// impl<T: NodeWeight> Sub for Weight<T> {
+//     type Output = Weight<T>;
+//
+//     fn sub(self, rhs: Self) -> Self::Output {
+//         Weight(self.0 - rhs.0)
+//     }
+// }
+//
+// impl<T: NodeWeight> Mul for Weight<T> {
+//     type Output = Weight<T>;
+//
+//     fn mul(self, rhs: Self) -> Self::Output {
+//         Weight(self.0 * rhs.0)
+//     }
+// }
+//
+// impl<T: NodeWeight> Div for Weight<T> {
+//     type Output = Weight<T>;
+//
+//     fn div(self, rhs: Self) -> Self::Output {
+//         Weight(self.0 / rhs.0)
+//     }
+// }
+//
+// impl<T: NodeWeight> Rem for Weight<T> {
+//     type Output = Weight<T>;
+//
+//     fn rem(self, rhs: Self) -> Self::Output {
+//         Weight(self.0 % rhs.0)
+//     }
+// }
 
-impl<T> Deref for Weight<T>
-where
-    T: Debug
-        + Default
-        + Clone
-        + PartialEq
-        + PartialOrd
-        + Ord
-        + Add<Output = T>
-        + Sub<Output = T>
-        + Mul<Output = T>
-        + Div<Output = T>
-        + Rem<Output = T>,
-{
-    type Target = T;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl<T> Add for Weight<T>
-where
-    T: Debug
-        + Default
-        + Clone
-        + PartialEq
-        + PartialOrd
-        + Ord
-        + Add<Output = T>
-        + Sub<Output = T>
-        + Mul<Output = T>
-        + Div<Output = T>
-        + Rem<Output = T>,
-{
-    type Output = Weight<T>;
-
-    fn add(self, rhs: Self) -> Self::Output {
-        Weight(self.0 + rhs.0)
-    }
-}
-
-impl<T> Sub for Weight<T>
-where
-    T: Debug
-        + Default
-        + Clone
-        + PartialEq
-        + PartialOrd
-        + Ord
-        + Add<Output = T>
-        + Sub<Output = T>
-        + Mul<Output = T>
-        + Div<Output = T>
-        + Rem<Output = T>,
-{
-    type Output = Weight<T>;
-
-    fn sub(self, rhs: Self) -> Self::Output {
-        Weight(self.0 - rhs.0)
-    }
-}
-
-impl<T> Mul for Weight<T>
-where
-    T: Debug
-        + Default
-        + Clone
-        + PartialEq
-        + PartialOrd
-        + Ord
-        + Add<Output = T>
-        + Sub<Output = T>
-        + Mul<Output = T>
-        + Div<Output = T>
-        + Rem<Output = T>,
-{
-    type Output = Weight<T>;
-
-    fn mul(self, rhs: Self) -> Self::Output {
-        Weight(self.0 * rhs.0)
-    }
-}
-
-impl<T> Div for Weight<T>
-where
-    T: Debug
-        + Default
-        + Clone
-        + PartialEq
-        + PartialOrd
-        + Ord
-        + Add<Output = T>
-        + Sub<Output = T>
-        + Mul<Output = T>
-        + Div<Output = T>
-        + Rem<Output = T>,
-{
-    type Output = Weight<T>;
-
-    fn div(self, rhs: Self) -> Self::Output {
-        Weight(self.0 / rhs.0)
-    }
-}
-
-impl<T> Rem for Weight<T>
-where
-    T: Debug
-        + Default
-        + Clone
-        + PartialEq
-        + PartialOrd
-        + Ord
-        + Add<Output = T>
-        + Sub<Output = T>
-        + Mul<Output = T>
-        + Div<Output = T>
-        + Rem<Output = T>,
-{
-    type Output = Weight<T>;
-
-    fn rem(self, rhs: Self) -> Self::Output {
-        Weight(self.0 % rhs.0)
-    }
-}
-
-#[derive(Debug, Clone, Eq, PartialOrd)]
+#[derive(Debug, Clone)]
 pub struct NodeConnection<I: NodeId, W: NodeWeight> {
     pub from: I,
     pub to: I,
@@ -272,17 +211,19 @@ impl<I: NodeId, W: NodeWeight> PartialEq for NodeConnection<I, W> {
     }
 }
 
-// impl<I: NodeId, W: NodeWeight> Ord for NodeConnection<I, f32> {
-//     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-//         self.weight.total_cmp(&other.weight)
-//     }
-// }
+impl<I: NodeId, W: NodeWeight> Eq for NodeConnection<I, W> {}
 
-// impl<W: NodeWeight, I: NodeId> Ord for NodeConnection<W, I> {
-//     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-//         self.weight.cmp
-//     }
-// }
+impl<I: NodeId, W: NodeWeight> Ord for NodeConnection<I, W> {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.weight.partial_cmp(&other.weight).expect("bla")
+    }
+}
+
+impl<I: NodeId, W: NodeWeight> PartialOrd for NodeConnection<I, W> {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
 
 #[cfg(test)]
 mod test {

@@ -29,7 +29,7 @@ impl ImplementationStrategy for DijkstraAlgorithm {
 
         let mut visited_nodes: VisitedList<I> = VisitedList::default();
         let mut node_distances: DistanceFromSource<I, W> = DistanceFromSource::default();
-        // let mut queue: PriorityQueue<NodeConnection<I, W>> = PriorityQueue(BinaryHeap::new());
+        let mut queue: PriorityQueue<NodeConnection<I, W>> = PriorityQueue(BinaryHeap::new());
 
         Ok(Path::default())
     }
@@ -220,6 +220,70 @@ mod test {
         println!("graph.get('D'): {:#?}", graph.get("D"));
 
         let _result = Strategy::execute::<DijkstraAlgorithm, &str, i32>(&graph, "A", "F");
+        // let result = Strategy::execute::<DijkstraAlgorithm, i8, i8>(&Graph::default(), 0, 0);
+
+        assert_eq!(1, 2)
+    }
+
+    #[test]
+    fn test_dijkstra_v1_strategy_float() {
+        let mut graph: Graph<&str, f32> = Graph::default();
+        let node_a = Node {
+            id: "A",
+            weight: 0.0,
+            neighbours: vec![
+                NodeConnection {
+                    from: "A",
+                    to: "B",
+                    weight: 3.0,
+                },
+                NodeConnection {
+                    from: "A",
+                    to: "C",
+                    weight: 5.0,
+                },
+                NodeConnection {
+                    from: "A",
+                    to: "D",
+                    weight: 9.0,
+                },
+            ],
+        };
+
+        let node_b = Node {
+            id: "B",
+            weight: 0.0,
+            neighbours: vec![
+                NodeConnection {
+                    from: "B",
+                    to: "A",
+                    weight: 3.0,
+                },
+                NodeConnection {
+                    from: "B",
+                    to: "C",
+                    weight: 3.0,
+                },
+                NodeConnection {
+                    from: "B",
+                    to: "D",
+                    weight: 4.0,
+                },
+                NodeConnection {
+                    from: "B",
+                    to: "E",
+                    weight: 7.0,
+                },
+            ],
+        };
+
+        graph.insert(node_a.id, node_a);
+        graph.insert(node_b.id, node_b);
+
+        // println!("graph: {:#?}", graph);
+        println!("graph.get('D'): {:#?}", graph.get("D"));
+
+        let _result = Strategy::execute::<DijkstraAlgorithm, &str, f32>(&graph, "A", "F");
         // let result = Strategy::execute::<DijkstraAlgorithm, i8, i8>(&Graph::default(), 0, 0);
 
         assert_eq!(1, 2)
