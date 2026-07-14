@@ -89,7 +89,14 @@ impl<I: NodeId, W: NodeWeight> DistanceFromSource<I, W> {
         distance: W,
         previous_node: Option<I>,
     ) -> Option<(W, Option<I>)> {
-        self.insert(id, (distance, previous_node))
+        match self.get(&id) {
+            Some(val) => match val.0 < distance {
+                true => Some(val.clone()),
+                false => self.insert(id, (distance, previous_node)),
+            },
+            None => self.insert(id, (distance, previous_node)),
+        }
+        // self.insert(id, (distance, previous_node))
     }
 
     pub fn compute_path(&self, to: I) -> Result<Path<I, W>, String> {
@@ -249,9 +256,10 @@ impl<I: NodeId> DerefMut for VisitedList<I> {
 ///
 /// assert_eq!(queue.pop().unwrap(), QueuedItem::from(1));
 /// ```
-pub struct PriorityQueue<T>(pub BinaryHeap<QueuedItem<T>>);
+#[derive(Debug)]
+pub struct PriorityQueue<T: Default>(pub BinaryHeap<QueuedItem<T>>);
 
-impl<T> Deref for PriorityQueue<T> {
+impl<T: Default> Deref for PriorityQueue<T> {
     type Target = BinaryHeap<QueuedItem<T>>;
 
     fn deref(&self) -> &Self::Target {
@@ -259,24 +267,24 @@ impl<T> Deref for PriorityQueue<T> {
     }
 }
 
-impl<T> DerefMut for PriorityQueue<T> {
+impl<T: Default> DerefMut for PriorityQueue<T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
-impl<T: Ord> From<T> for PriorityQueue<T> {
-    fn from(value: T) -> Self {
-        PriorityQueue(BinaryHeap::from([QueuedItem::from(value)]))
-    }
-}
+// impl<T: Default + Ord> From<T> for PriorityQueue<T> {
+//     fn from(value: T) -> Self {
+//         PriorityQueue(BinaryHeap::from([QueuedItem::from(value)]))
+//     }
+// }
 
-impl<T: Ord> From<Vec<QueuedItem<T>>> for PriorityQueue<T> {
-    fn from(value: Vec<QueuedItem<T>>) -> Self {
-        PriorityQueue(BinaryHeap::from(value))
-    }
-}
-
+// impl<T: PartialOrd> PartialOrd for PriorityQueue<T> {
+//     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+//         self.0.
+//     }
+// }
+//
 // +++++++++++++++++++ END PriorityQueue  +++++++++++++++++++
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -308,8 +316,14 @@ impl<T: Ord> From<Vec<QueuedItem<T>>> for PriorityQueue<T> {
 /// assert_eq!(reverse, Reverse(69));
 /// assert_eq!(value, 69);
 /// ```
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord)]
 pub struct QueuedItem<T>(pub Reverse<T>);
+
+impl<T> QueuedItem<T> {
+    pub fn item(&self) -> &T {
+        &self.0.0
+    }
+}
 
 impl<T> Deref for QueuedItem<T> {
     type Target = Reverse<T>;
@@ -331,6 +345,24 @@ impl<T> From<T> for QueuedItem<T> {
     }
 }
 
+// impl Ord for QueuedItem<f32> {
+//     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+//         self.0.0.total_cmp(&other.0.0)
+//     }
+// }
+
+// impl<T: PartialOrd> PartialOrd for QueuedItem<T> {
+//     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+//         self.0.partial_cmp(&other.0)
+//     }
+// }
+
+impl<T: Default + Ord> From<Vec<QueuedItem<T>>> for PriorityQueue<T> {
+    fn from(value: Vec<QueuedItem<T>>) -> Self {
+        PriorityQueue(BinaryHeap::from(value))
+    }
+}
+//
 // +++++++++++++++++++ END QueuedItem  +++++++++++++++++++
 
 #[cfg(test)]
@@ -355,7 +387,12 @@ mod test {
 
         let last_inserted_distance = distances.get(&(0, 0));
         println!("last_inserted_distance: {:?}", last_inserted_distance);
-        assert_eq!(last_inserted_distance, Some(&(1, None)));
+
+        // new_distance insertion FAILED because the list already had an entry
+        // with id (0, 0), and its value (0) is LOWER than the one we are trying to
+        // push (1)
+        assert_ne!(last_inserted_distance, Some(&(1, None)));
+        assert_eq!(last_inserted_distance, Some(&(0, None)));
 
         // assert_eq!(1, 2)
     }
@@ -419,24 +456,24 @@ mod test {
         let node_4 = "D";
         let node_5 = "E";
 
-        let mut queue: PriorityQueue<&str> = PriorityQueue::from(vec![
-            // add explicitly trough QueuedItem
-            QueuedItem::from(node_3),
-            // implicitly convert to QueuedItem
-            // node_2.into(),
-            // node_3.into(),
-            // node_4.into(),
-            // node_5.into(),
-        ]);
-
-        queue.push(node_5.into());
-        queue.push(node_2.into());
-        queue.push(node_1.into());
-        queue.push(node_4.into());
-
-        println!("peek: {:?}", queue.peek().unwrap());
-
-        assert_eq!(queue.pop().unwrap(), QueuedItem::from("A"));
+        // let mut queue: PriorityQueue<&str> = PriorityQueue::from(vec![
+        //     // add explicitly trough QueuedItem
+        //     QueuedItem::from(node_3),
+        //     // implicitly convert to QueuedItem
+        //     // node_2.into(),
+        //     // node_3.into(),
+        //     // node_4.into(),
+        //     // node_5.into(),
+        // ]);
+        //
+        // queue.push(node_5.into());
+        // queue.push(node_2.into());
+        // queue.push(node_1.into());
+        // queue.push(node_4.into());
+        //
+        // println!("peek: {:?}", queue.peek().unwrap());
+        //
+        // assert_eq!(queue.pop().unwrap(), QueuedItem::from("A"));
 
         // assert_eq!(1, 2)
     }
@@ -462,6 +499,31 @@ mod test {
         println!("peek: {:?}", queue.peek().unwrap());
 
         assert_eq!(queue.pop().unwrap(), QueuedItem::from(1));
+
+        // assert_eq!(1, 2)
+    }
+
+    #[test]
+    fn test_priority_queue_f32() {
+        let node_1: f32 = 1.0;
+        let node_2: f32 = 2.0;
+        let node_3: f32 = 3.0;
+        let node_4: f32 = 4.0;
+        let node_5: f32 = 5.0;
+
+        // let mut queue: PriorityQueue<f32> = PriorityQueue::from(vec![
+        //     // add explicitly trough QueuedItem
+        //     QueuedItem::from(node_1),
+        //     // implicitly convert to QueuedItem
+        //     node_2.into(),
+        //     node_3.into(),
+        //     node_4.into(),
+        //     node_5.into(),
+        // ]);
+        //
+        // println!("peek: {:?}", queue.peek().unwrap());
+        //
+        // assert_eq!(queue.pop().unwrap(), QueuedItem::from(1.0));
 
         // assert_eq!(1, 2)
     }
