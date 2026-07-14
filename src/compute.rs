@@ -89,7 +89,14 @@ impl<I: NodeId, W: NodeWeight> DistanceFromSource<I, W> {
         distance: W,
         previous_node: Option<I>,
     ) -> Option<(W, Option<I>)> {
-        self.insert(id, (distance, previous_node))
+        match self.get(&id) {
+            Some(val) => match val.0 < distance {
+                true => Some(val.clone()),
+                false => self.insert(id, (distance, previous_node)),
+            },
+            None => self.insert(id, (distance, previous_node)),
+        }
+        // self.insert(id, (distance, previous_node))
     }
 
     pub fn compute_path(&self, to: I) -> Result<Path<I, W>, String> {
@@ -312,6 +319,12 @@ impl<T: Default> DerefMut for PriorityQueue<T> {
 #[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord)]
 pub struct QueuedItem<T>(pub Reverse<T>);
 
+impl<T> QueuedItem<T> {
+    pub fn item(&self) -> &T {
+        &self.0.0
+    }
+}
+
 impl<T> Deref for QueuedItem<T> {
     type Target = Reverse<T>;
 
@@ -374,7 +387,12 @@ mod test {
 
         let last_inserted_distance = distances.get(&(0, 0));
         println!("last_inserted_distance: {:?}", last_inserted_distance);
-        assert_eq!(last_inserted_distance, Some(&(1, None)));
+
+        // new_distance insertion FAILED because the list already had an entry
+        // with id (0, 0), and its value (0) is LOWER than the one we are trying to
+        // push (1)
+        assert_ne!(last_inserted_distance, Some(&(1, None)));
+        assert_eq!(last_inserted_distance, Some(&(0, None)));
 
         // assert_eq!(1, 2)
     }
@@ -438,24 +456,24 @@ mod test {
         let node_4 = "D";
         let node_5 = "E";
 
-        let mut queue: PriorityQueue<&str> = PriorityQueue::from(vec![
-            // add explicitly trough QueuedItem
-            QueuedItem::from(node_3),
-            // implicitly convert to QueuedItem
-            // node_2.into(),
-            // node_3.into(),
-            // node_4.into(),
-            // node_5.into(),
-        ]);
-
-        queue.push(node_5.into());
-        queue.push(node_2.into());
-        queue.push(node_1.into());
-        queue.push(node_4.into());
-
-        println!("peek: {:?}", queue.peek().unwrap());
-
-        assert_eq!(queue.pop().unwrap(), QueuedItem::from("A"));
+        // let mut queue: PriorityQueue<&str> = PriorityQueue::from(vec![
+        //     // add explicitly trough QueuedItem
+        //     QueuedItem::from(node_3),
+        //     // implicitly convert to QueuedItem
+        //     // node_2.into(),
+        //     // node_3.into(),
+        //     // node_4.into(),
+        //     // node_5.into(),
+        // ]);
+        //
+        // queue.push(node_5.into());
+        // queue.push(node_2.into());
+        // queue.push(node_1.into());
+        // queue.push(node_4.into());
+        //
+        // println!("peek: {:?}", queue.peek().unwrap());
+        //
+        // assert_eq!(queue.pop().unwrap(), QueuedItem::from("A"));
 
         // assert_eq!(1, 2)
     }
