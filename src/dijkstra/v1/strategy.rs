@@ -43,14 +43,12 @@ impl ImplementationStrategy for DijkstraAlgorithm {
         println!("from: {:#?}", from);
         println!("to: {:#?}", to);
 
-        println!("end node: {:#?}", graph.get(&to).take());
-
-        let mut result_path: Path<I, W> = Path::default();
-
         let mut visited_nodes: VisitedList<I> = VisitedList::default();
         let mut node_distances: DistanceFromSource<I, W> = DistanceFromSource::default();
         let mut queue: PriorityQueue<NodeConnection<I, W>> = PriorityQueue(BinaryHeap::new());
 
+        // set the starting state up, insert the starting node on distances_list
+        // set it as visited and load all its connections to the priority queue
         init_distances(graph, &mut node_distances, &from);
         visited_nodes.insert(from.clone());
 
@@ -94,6 +92,7 @@ impl ImplementationStrategy for DijkstraAlgorithm {
                 current_node, node_distances
             );
 
+            // we reached the destination node, we're finished!
             if item.to == to {
                 break;
             }
@@ -101,10 +100,14 @@ impl ImplementationStrategy for DijkstraAlgorithm {
             let neighbours = graph.get(&item.to).unwrap().neighbours.clone();
 
             for neighbour in neighbours {
+                // check if neighbour touches already visited nodes, if so
+                // we can skip it, because we already have the fastest path for
+                // that node
                 if visited_nodes.is_visited(&neighbour.to) {
                     continue;
                 }
 
+                // connection is eligible for priority queue
                 let mut new_connection = neighbour;
                 let last_conn_weight = connection.item().weight.clone();
                 new_connection.weight = new_connection.weight + last_conn_weight;
