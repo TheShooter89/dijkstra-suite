@@ -17,21 +17,150 @@ Check the documentation with example on [docs.rs](https://docs.rs/dijkstra-suite
 
 ## Quick Start
 
+Add `dijkstra-suite` to your project, running
+
 ```sh
-make run
+cargo add dijkstra-suite
 ```
 
-if you want to autoreload upon changes:
-*(NOTE: requires [watchexec](https://github.com/watchexec/watchexec) installed)*
+or add it to your `Cargo.toml` file
 
-```sh
-make watch
+```toml
+[dependencies]
+dijkstra-suite = "0.1.0-beta.1"
 ```
 
-## Run the app
+## Usage
 
-```sh
-cargo run
+Create a `Graph` and run it through `dijkstra_path()` function providing a starting and an ending node
+
+```rust
+use dijkstra_suite::dijkstra::dijkstra_path;
+use dijkstra_suite::graph::Graph;
+use dijkstra_suite::path::Path;
+use dijkstra_suite::node::{Node, NodeConnection};
+
+let mut graph: Graph<&str, f32> = Graph::default();
+let node_a = Node {
+    id: "A",
+    weight: 0.0,
+    neighbours: vec![
+        NodeConnection {
+            from: "A",
+            to: "B",
+            weight: 7.0,
+        },
+        NodeConnection {
+            from: "A",
+            to: "E",
+            weight: 1.0,
+        },
+    ],
+};
+
+let node_b = Node {
+    id: "B",
+    weight: 0.0,
+    neighbours: vec![
+        NodeConnection {
+            from: "B",
+            to: "A",
+            weight: 7.0,
+        },
+        NodeConnection {
+            from: "B",
+            to: "C",
+            weight: 3.0,
+        },
+        NodeConnection {
+            from: "B",
+            to: "E",
+            weight: 8.0,
+        },
+    ],
+};
+
+let node_c = Node {
+    id: "C",
+    weight: 0.0,
+    neighbours: vec![
+        NodeConnection {
+            from: "C",
+            to: "B",
+            weight: 3.0,
+        },
+        NodeConnection {
+            from: "C",
+            to: "D",
+            weight: 6.0,
+        },
+        NodeConnection {
+            from: "C",
+            to: "E",
+            weight: 2.0,
+        },
+    ],
+};
+
+let node_d = Node {
+    id: "D",
+    weight: 0.0,
+    neighbours: vec![
+        NodeConnection {
+            from: "D",
+            to: "C",
+            weight: 6.0,
+        },
+        NodeConnection {
+            from: "D",
+            to: "E",
+            weight: 7.0,
+        },
+    ],
+};
+
+let node_e = Node {
+    id: "E",
+    weight: 0.0,
+    neighbours: vec![
+        NodeConnection {
+            from: "E",
+            to: "A",
+            weight: 1.0,
+        },
+        NodeConnection {
+            from: "E",
+            to: "B",
+            weight: 8.0,
+        },
+        NodeConnection {
+            from: "E",
+            to: "C",
+            weight: 2.0,
+        },
+        NodeConnection {
+            from: "E",
+            to: "D",
+            weight: 7.0,
+        },
+    ],
+};
+
+graph.insert(node_a.id, node_a);
+graph.insert(node_b.id, node_b);
+graph.insert(node_c.id, node_c);
+graph.insert(node_d.id, node_d);
+graph.insert(node_e.id, node_e);
+
+let result = dijkstra_path(&graph, "B", "D");
+
+let expected_path: Path<&str, f32> = Path {
+    weight: 9.0,
+    steps: vec!["B", "C", "D"],
+};
+
+assert_eq!(result.unwrap(), expected_path)
+
 ```
 
 ## License
