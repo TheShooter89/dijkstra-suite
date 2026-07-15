@@ -20,6 +20,7 @@
 //!
 //! ```rust
 //! use dijkstra_suite::{
+//!     error::DijkstraError,
 //!     graph::Graph,
 //!     node::{NodeId, NodeWeight},
 //!     path::Path,
@@ -37,19 +38,20 @@
 //!         from: I,
 //!         to: I,
 //!         options: Self::Opts,
-//!     ) -> Result<Path<I, W>, String> {
+//!     ) -> Result<Path<I, W>, DijkstraError> {
 //!         Ok(Path::default())
 //!     }
 //! }
 //!
 //! let path = Strategy::execute_with_opts::<TestStrategy, i32, i32>(&Graph::default(), 0, 99, ());
 //!
-//! assert_eq!(path, Ok(Path::default()))
+//! assert_eq!(path.unwrap(), Path::default())
 //! ```
 
 use std::fmt::Debug;
 
 use crate::{
+    error::DijkstraError,
     graph::Graph,
     node::{NodeId, NodeWeight},
     path::Path,
@@ -63,8 +65,8 @@ pub trait ImplementationStrategy {
         from: I,
         to: I,
         options: Self::Opts,
-    ) -> Result<Path<I, W>, String> {
-        Err(format!(
+    ) -> Result<Path<I, W>, DijkstraError> {
+        Err(DijkstraError::StrategyError(format!(
             "Strategy not implemented\n[
   graph: {:?}
   from: {:?}
@@ -72,7 +74,7 @@ pub trait ImplementationStrategy {
   opts: {:?}
 ]",
             graph, from, to, options
-        ))
+        )))
         // Err("Strategy not implemented".into())
     }
 }
@@ -83,7 +85,7 @@ pub trait StrategyRunner {
         from: I,
         to: I,
         options: SelectedStrategy::Opts,
-    ) -> Result<Path<I, W>, String> {
+    ) -> Result<Path<I, W>, DijkstraError> {
         Strategy::execute_with_opts::<SelectedStrategy, I, W>(graph, from, to, options)
     }
 }
@@ -111,6 +113,7 @@ pub trait StrategyRunner {
 ///
 /// ```rust
 /// use dijkstra_suite::{
+///     error::DijkstraError,
 ///     graph::Graph,
 ///     node::{NodeId, NodeWeight},
 ///     path::Path,
@@ -128,18 +131,18 @@ pub trait StrategyRunner {
 ///         from: I,
 ///         to: I,
 ///         options: Self::Opts,
-///     ) -> Result<Path<I, W>, String> {
+///     ) -> Result<Path<I, W>, DijkstraError> {
 ///         Ok(Path::default())
 ///     }
 /// }
 ///
 /// let path = Strategy::execute::<TestStrategy, i32, i32>(&Graph::default(), 0, 99);
 ///
-/// assert_eq!(path, Ok(Path::default()));
+/// assert_eq!(path.unwrap(), Path::default());
 ///
 /// let path = Strategy::execute_with_opts::<TestStrategy, i32, i32>(&Graph::default(), 0, 99, ());
 ///
-/// assert_eq!(path, Ok(Path::default()))
+/// assert_eq!(path.unwrap(), Path::default())
 /// ```
 #[derive(Debug)]
 pub struct Strategy {}
@@ -149,7 +152,7 @@ impl Strategy {
         graph: &Graph<I, W>,
         from: I,
         to: I,
-    ) -> Result<Path<I, W>, String> {
+    ) -> Result<Path<I, W>, DijkstraError> {
         SelectedStrategy::run(graph, from, to, SelectedStrategy::Opts::default())
         // Ok(())
     }
@@ -159,7 +162,7 @@ impl Strategy {
         from: I,
         to: I,
         options: SelectedStrategy::Opts,
-    ) -> Result<Path<I, W>, String> {
+    ) -> Result<Path<I, W>, DijkstraError> {
         SelectedStrategy::run(graph, from, to, options)
         // Ok(())
     }
@@ -170,6 +173,7 @@ impl StrategyRunner for Strategy {}
 #[cfg(test)]
 mod test {
     use crate::{
+        error::DijkstraError,
         graph::Graph,
         path::Path,
         strategy::{ImplementationStrategy, StrategyRunner},
@@ -190,7 +194,7 @@ mod test {
                 from: I,
                 to: I,
                 options: Self::Opts,
-            ) -> Result<crate::path::Path<I, W>, String> {
+            ) -> Result<crate::path::Path<I, W>, DijkstraError> {
                 Ok(Path::default())
             }
         }
@@ -206,6 +210,6 @@ mod test {
             println!("{}", err_msg.clone());
         }
 
-        assert_eq!(path, Ok(Path::default()))
+        assert_eq!(path.unwrap(), Path::default())
     }
 }

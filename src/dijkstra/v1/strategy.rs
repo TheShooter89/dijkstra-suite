@@ -2,30 +2,42 @@ use std::collections::BinaryHeap;
 
 use crate::{
     compute::{DistanceFromSource, PriorityQueue, QueuedItem, VisitedList},
+    error::DijkstraError,
     graph::Graph,
     node::{NodeConnection, NodeId, NodeWeight},
     path::Path,
     strategy::ImplementationStrategy,
 };
 
-fn generic_zero<I: NodeId, W: NodeWeight>(graph: &Graph<I, W>, from: &I) -> W {
+fn generic_zero<I: NodeId, W: NodeWeight>(
+    graph: &Graph<I, W>,
+    from: &I,
+) -> Result<W, DijkstraError> {
     // first distance is 0, but we do not know exactly "what 0 is" in the
     // context of generic W: NodeWeight type, so we "create" the 0 subtracting
     // start node weight from itself (therefore zero by elision: if weight is 3, 3-3 = 0)
     // this works because NodeWeight types implements Sub trait
-    let start_weight = &graph.get(&from).unwrap().weight.clone();
+    let start_weight = &graph
+        .get(&from)
+        .ok_or(DijkstraError::GenericZeroError(format!(
+            "node {:#?} not found in graph",
+            &from
+        )))?
+        .weight
+        .clone();
     let opposite_weight = start_weight.clone();
     let start_weight = opposite_weight.clone();
-    start_weight - opposite_weight
+    Ok(start_weight - opposite_weight)
 }
 
 fn init_distances<I: NodeId, W: NodeWeight>(
     graph: &Graph<I, W>,
     distances_list: &mut DistanceFromSource<I, W>,
     start_node: &I,
-) {
-    let zero = generic_zero(graph, start_node);
+) -> Result<(), DijkstraError> {
+    let zero = generic_zero(graph, start_node)?;
     distances_list.set_distance(start_node.clone(), zero, None);
+    Ok(())
 }
 
 #[derive(Debug)]
@@ -39,7 +51,7 @@ impl ImplementationStrategy for DijkstraAlgorithm {
         from: I,
         to: I,
         options: Self::Opts,
-    ) -> Result<Path<I, W>, String> {
+    ) -> Result<Path<I, W>, DijkstraError> {
         println!("from: {:#?}", from);
         println!("to: {:#?}", to);
 
