@@ -7,7 +7,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! dijkstra-suite = "0.1.0-beta.2"
+//! dijkstra-suite = "0.1.0-beta.3"
 //! ```
 //!
 //! ## Usage
