@@ -16,6 +16,13 @@
 //! Returned result is a path of `Path` type, represented as an ordinated sequence of node ids
 //! along with the total weight of the path (the sum of all node weights of the path)
 //!
+//! ### Errors
+//!
+//! All errors convolute to [`DijkstraError`](error::DijkstraError), import it from [`error`] module and
+//! handle every error of the library. See [`error`] for further usage information
+//!
+//! ## Example
+//!
 //! ```rust
 //! use dijkstra_suite::dijkstra::dijkstra_path;
 //! use dijkstra_suite::graph::Graph;
@@ -153,6 +160,7 @@
 
 pub mod compute;
 pub mod dijkstra;
+pub mod error;
 pub mod graph;
 pub mod node;
 pub mod path;

@@ -147,6 +147,7 @@
 //! ```
 
 use crate::{
+    error::DijkstraError,
     graph::Graph,
     node::{NodeId, NodeWeight},
     path::Path,
@@ -163,7 +164,7 @@ pub fn dijkstra_path<I: NodeId, W: NodeWeight>(
     graph: &Graph<I, W>,
     from: I,
     to: I,
-) -> Result<Path<I, W>, String> {
+) -> Result<Path<I, W>, DijkstraError> {
     println!("dijkstra_path function");
 
     Strategy::execute::<DijkstraAlgorithm, I, W>(graph, from, to)
