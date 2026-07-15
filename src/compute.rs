@@ -23,6 +23,7 @@ use std::{
 };
 
 use crate::{
+    error::DijkstraError,
     node::{NodeId, NodeWeight},
     path::Path,
 };
@@ -99,9 +100,9 @@ impl<I: NodeId, W: NodeWeight> DistanceFromSource<I, W> {
         // self.insert(id, (distance, previous_node))
     }
 
-    pub fn compute_path(&self, to: I) -> Result<Path<I, W>, String> {
+    pub fn compute_path(&self, to: I) -> Result<Path<I, W>, DijkstraError> {
         if self.get(&to).is_none() {
-            return Err("end node not found".into());
+            return Err(DijkstraError::ComputePathError("end node not found".into()));
         }
 
         let (cost, previous_node) = self.get(&to).unwrap();
@@ -145,7 +146,11 @@ impl<I: NodeId, W: NodeWeight> DistanceFromSource<I, W> {
                         }
                     }
                 }
-                None => return Err("no valid path found".into()),
+                None => {
+                    return Err(DijkstraError::ComputePathError(
+                        "no valid path found".into(),
+                    ));
+                }
             }
         }
 
