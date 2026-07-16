@@ -27,7 +27,7 @@
 
 use crate::node::{NodeId, NodeWeight};
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct Path<I: NodeId, W: NodeWeight> {
     pub weight: W,
     pub steps: Vec<I>,
