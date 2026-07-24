@@ -4,6 +4,7 @@ use crate::{
     compute::{DistanceFromSource, PriorityQueue, QueuedItem, VisitedList},
     error::DijkstraError,
     graph::Graph,
+    log_info,
     node::{NodeConnection, NodeId, NodeWeight},
     path::Path,
     strategy::ImplementationStrategy,
@@ -52,8 +53,8 @@ impl ImplementationStrategy for DijkstraAlgorithm {
         to: I,
         options: Self::Opts,
     ) -> Result<Path<I, W>, DijkstraError> {
-        println!("from: {:#?}", from);
-        println!("to: {:#?}", to);
+        log_info!("from: {:#?}", from);
+        log_info!("to: {:#?}", to);
 
         let mut visited_nodes: VisitedList<I> = VisitedList::default();
         let mut node_distances: DistanceFromSource<I, W> = DistanceFromSource::default();
@@ -64,9 +65,10 @@ impl ImplementationStrategy for DijkstraAlgorithm {
         init_distances(graph, &mut node_distances, &from);
         visited_nodes.insert(from.clone());
 
-        println!(
+        log_info!(
             "[iteration: {:#?}] starting distances: {:#?}",
-            from, node_distances
+            from,
+            node_distances
         );
 
         let start_node_neighbours = graph.get(&from).unwrap().neighbours.clone();
@@ -74,16 +76,19 @@ impl ImplementationStrategy for DijkstraAlgorithm {
         for connection in start_node_neighbours {
             queue.push(QueuedItem::from(connection));
         }
-        println!(
+
+        log_info!(
             "[iteration: {:#?}] queue after start node inserts: {:#?}",
-            from, queue
+            from,
+            queue
         );
 
         visited_nodes.insert(from.clone());
 
-        println!(
+        log_info!(
             "[iteration: {:#?}] visited_nodes after start node inserts: {:#?}",
-            from, visited_nodes
+            from,
+            visited_nodes
         );
 
         let mut current_node = from.clone();
@@ -91,17 +96,19 @@ impl ImplementationStrategy for DijkstraAlgorithm {
         while let Some(connection) = queue.pop() {
             //
             current_node = connection.item().from.clone();
-            println!(
+            log_info!(
                 "[iteration: {:#?}] fastest connection from queue: {:#?}",
-                current_node, connection
+                current_node,
+                connection
             );
 
             let item = connection.item().clone();
             node_distances.set_distance(item.to.clone(), item.weight, Some(item.from));
 
-            println!(
+            log_info!(
                 "[iteration: {:#?}] node_distances after new distance push: {:#?}",
-                current_node, node_distances
+                current_node,
+                node_distances
             );
 
             // we reached the destination node, we're finished!
@@ -128,10 +135,10 @@ impl ImplementationStrategy for DijkstraAlgorithm {
             }
         }
 
-        println!("[END] final node_distances: {:#?}", node_distances);
+        log_info!("[END] final node_distances: {:#?}", node_distances);
 
         let fastest_path = node_distances.compute_path(to);
-        println!("[END] fastest_path: {:#?}", fastest_path);
+        log_info!("[END] fastest_path: {:#?}", fastest_path);
 
         fastest_path
     }

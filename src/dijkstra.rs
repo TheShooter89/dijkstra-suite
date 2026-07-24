@@ -153,6 +153,7 @@ use crate::{
     path::Path,
     strategy::Strategy,
     v1::strategy::DijkstraAlgorithm,
+    log_info
 };
 
 pub mod v1;
@@ -165,7 +166,7 @@ pub fn dijkstra_path<I: NodeId, W: NodeWeight>(
     from: I,
     to: I,
 ) -> Result<Path<I, W>, DijkstraError> {
-    println!("dijkstra_path function");
+    log_info!("dijkstra_path function");
 
     Strategy::execute::<DijkstraAlgorithm, I, W>(graph, from, to)
 }

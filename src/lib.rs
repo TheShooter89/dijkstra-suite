@@ -158,6 +158,7 @@
     html_root_url = "https://docs.rs/nanoid"
 )]
 
+pub mod log;
 pub mod compute;
 pub mod dijkstra;
 pub mod error;
